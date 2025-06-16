@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { env } from 'process';
 
 @Injectable()
 export class PingPongService {
@@ -201,9 +202,9 @@ export class PingPongService {
             <div class="modal" id="pingModal">PING</div>
         </div>
 
-        <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+        <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
         <script>
-            const socket = io({
+            const socket = io("${env.BASE_URL}", {
             query: {
                 type: 'ping'
             }
@@ -449,9 +450,9 @@ export class PingPongService {
             <div class="modal" id="pongModal">PONG</div>
         </div>
 
-        <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+        <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
         <script>
-            const socket = io({
+            const socket = io("${env.BASE_URL}", {
             query: {
                 type: 'pong'
             }

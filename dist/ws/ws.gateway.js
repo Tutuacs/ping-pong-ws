@@ -69,7 +69,10 @@ exports.WsGateway = WsGateway = __decorate([
         cors: {
             origin: '*',
             methods: ['GET', 'POST'],
+            credentials: true,
+            transports: ['websocket', 'polling'],
         },
+        allowEIO3: true,
     })
 ], WsGateway);
 //# sourceMappingURL=ws.gateway.js.map

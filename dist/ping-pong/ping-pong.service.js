@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PingPongService = void 0;
 const common_1 = require("@nestjs/common");
+const process_1 = require("process");
 let PingPongService = class PingPongService {
     pingPage() {
         return `
@@ -207,9 +208,9 @@ let PingPongService = class PingPongService {
             <div class="modal" id="pingModal">PING</div>
         </div>
 
-        <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+        <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
         <script>
-            const socket = io({
+            const socket = io("${process_1.env.BASE_URL}", {
             query: {
                 type: 'ping'
             }
@@ -454,9 +455,9 @@ let PingPongService = class PingPongService {
             <div class="modal" id="pongModal">PONG</div>
         </div>
 
-        <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+        <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
         <script>
-            const socket = io({
+            const socket = io("${process_1.env.BASE_URL}", {
             query: {
                 type: 'pong'
             }

@@ -5,7 +5,10 @@ import { Server, Socket } from 'socket.io';
   cors: {
     origin: '*',
     methods: ['GET', 'POST'],
+    credentials: true,
+    transports: ['websocket', 'polling'],
   },
+  allowEIO3: true,
 })
 export class WsGateway {
 
