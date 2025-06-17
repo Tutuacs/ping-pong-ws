@@ -13,14 +13,19 @@ const app_service_1 = require("./app.service");
 const ping_pong_module_1 = require("./ping-pong/ping-pong.module");
 const ws_gateway_1 = require("./ws/ws.gateway");
 const config_1 = require("@nestjs/config");
+const redis_module_1 = require("./redis/redis.module");
+const sse_module_1 = require("./sse/sse.module");
+const event_emitter_1 = require("@nestjs/event-emitter");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [ping_pong_module_1.PingPongModule, config_1.ConfigModule.forRoot({
+        imports: [ping_pong_module_1.PingPongModule, event_emitter_1.EventEmitterModule.forRoot({
+                global: true,
+            }), config_1.ConfigModule.forRoot({
                 isGlobal: true,
-            })],
+            }), redis_module_1.RedisModule, sse_module_1.SseModule],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, ws_gateway_1.WsGateway],
     })

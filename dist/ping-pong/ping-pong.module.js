@@ -10,11 +10,13 @@ exports.PingPongModule = void 0;
 const common_1 = require("@nestjs/common");
 const ping_pong_service_1 = require("./ping-pong.service");
 const ping_pong_controller_1 = require("./ping-pong.controller");
+const redis_module_1 = require("../redis/redis.module");
 let PingPongModule = class PingPongModule {
 };
 exports.PingPongModule = PingPongModule;
 exports.PingPongModule = PingPongModule = __decorate([
     (0, common_1.Module)({
+        imports: [redis_module_1.RedisModule],
         controllers: [ping_pong_controller_1.PingPongController],
         providers: [ping_pong_service_1.PingPongService],
     })

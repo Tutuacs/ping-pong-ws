@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { env } from 'process';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class PingPongService {
+
+    constructor(private readonly redis: RedisService) {}
 
     pingPage() {
         return `
@@ -202,50 +205,53 @@ export class PingPongService {
             <div class="modal" id="pingModal">PING</div>
         </div>
 
-        <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
         <script>
-            const socket = io("${env.BASE_URL}", {
-            query: {
-                type: 'ping'
-            }
-            });
-
             const pingButton = document.getElementById('pingButton');
             const pingModal = document.getElementById('pingModal');
             const ballContainer = document.getElementById('ballContainer');
             const raquet1 = document.getElementById('r1');
-
-            // Conectar ao WebSocket
-            socket.on('connect', () => {
-            console.log('Conectado ao WebSocket como Ping');
-            });
-
-            // Receber evento 'ping' do servidor
-            socket.on('ping', (message) => {
-            console.log('Recebido ping:', message);
             
-            // Mostrar modal
-            pingModal.style.display = 'block';
+            // SSE Connection
+            const eventSource = new EventSource('${env.BASE_URL}/sse/stream');
             
-            // Executar animações
-            raquet1.classList.add('swingPing');
-            ballContainer.classList.add('moveRight');
+            eventSource.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.channel === 'ping') {
+                        console.log('Received ping event:', data);
+                        
+                        // Show modal
+                        pingModal.style.display = 'block';
+                        
+                        // Execute animations
+                        raquet1.classList.add('swingPing');
+                        ballContainer.classList.add('moveRight');
+                        
+                        setTimeout(() => {
+                            pingModal.style.display = 'none';
+                            
+                            // Reset animations
+                            setTimeout(() => {
+                                raquet1.classList.remove('swingPing');
+                                ballContainer.classList.remove('moveRight');
+                                ballContainer.style.transform = 'translate(-50%, -50%)';
+                            }, 300);
+                        }, 1000);
+                    }
+                } catch (error) {
+                    console.error('Error processing SSE event:', error);
+                }
+            };
             
-            setTimeout(() => {
-                pingModal.style.display = 'none';
-                
-                // Resetar animações
-                setTimeout(() => {
-                raquet1.classList.remove('swingPing');
-                ballContainer.classList.remove('moveRight');
-                ballContainer.style.transform = 'translate(-50%, -50%)';
-                }, 300);
-            }, 1000);
-            });
-
-            // Enviar evento ao clicar no botão
+            eventSource.onerror = (error) => {
+                console.error('SSE Error:', error);
+                // Auto-reconnect handled by browser
+            };
+            
+            // Button click handler
             pingButton.addEventListener('click', () => {
-            socket.emit('ping-pong', 'ping');
+                fetch('/ping-pong/ping')
+                    .catch(err => console.error('Ping request failed:', err));
             });
         </script>
         </body>
@@ -450,54 +456,66 @@ export class PingPongService {
             <div class="modal" id="pongModal">PONG</div>
         </div>
 
-        <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
         <script>
-            const socket = io("${env.BASE_URL}", {
-            query: {
-                type: 'pong'
-            }
-            });
-
             const pongButton = document.getElementById('pongButton');
             const pongModal = document.getElementById('pongModal');
             const ballContainer = document.getElementById('ballContainer');
             const raquet2 = document.getElementById('r2');
-
-            // Conectar ao WebSocket
-            socket.on('connect', () => {
-            console.log('Conectado ao WebSocket como Pong');
-            });
-
-            // Receber evento 'pong' do servidor
-            socket.on('pong', (message) => {
-            console.log('Recebido pong:', message);
             
-            // Mostrar modal
-            pongModal.style.display = 'block';
+            // SSE Connection
+            const eventSource = new EventSource('${env.BASE_URL}/sse/stream');
             
-            // Executar animações
-            raquet2.classList.add('swingPong');
-            ballContainer.classList.add('moveLeft');
+            eventSource.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.channel === 'pong') {
+                        console.log('Received pong event:', data);
+                        
+                        // Show modal
+                        pongModal.style.display = 'block';
+                        
+                        // Execute animations
+                        raquet2.classList.add('swingPong');
+                        ballContainer.classList.add('moveLeft');
+                        
+                        setTimeout(() => {
+                            pongModal.style.display = 'none';
+                            
+                            // Reset animations
+                            setTimeout(() => {
+                                raquet2.classList.remove('swingPong');
+                                ballContainer.classList.remove('moveLeft');
+                                ballContainer.style.transform = 'translate(-50%, -50%)';
+                            }, 300);
+                        }, 1000);
+                    }
+                } catch (error) {
+                    console.error('Error processing SSE event:', error);
+                }
+            };
             
-            setTimeout(() => {
-                pongModal.style.display = 'none';
-                
-                // Resetar animações
-                setTimeout(() => {
-                raquet2.classList.remove('swingPong');
-                ballContainer.classList.remove('moveLeft');
-                ballContainer.style.transform = 'translate(-50%, -50%)';
-                }, 300);
-            }, 1000);
-            });
-
-            // Enviar evento ao clicar no botão
+            eventSource.onerror = (error) => {
+                console.error('SSE Error:', error);
+                // Auto-reconnect handled by browser
+            };
+            
+            // Button click handler
             pongButton.addEventListener('click', () => {
-            socket.emit('ping-pong', 'pong');
+                fetch('/ping-pong/pong')
+                    .catch(err => console.error('Pong request failed:', err));
             });
         </script>
         </body>
         </html>`;
+    }
+
+    ping_pong(type: string) {
+        if (type === 'ping') {
+            return this.redis.publish('pong', 'Ping!');
+        } else if (type === 'pong') {
+            return this.redis.publish('ping', 'Pong!');
+        }
+        return
     }
 
 }

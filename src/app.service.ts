@@ -3,7 +3,7 @@ import { env } from 'process';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
+  homePage(): string {
     return `
     <!DOCTYPE html>
 <html lang="pt-BR">
@@ -401,11 +401,11 @@ export class AppService {
             const baseUrl = window.location.origin;
             
             pingBtn.addEventListener('click', function() {
-                window.location.href = "${env.BASE_URL}/ping-pong/ping";
+                window.location.href = "${env.BASE_URL}/ping";
             });
             
             pongBtn.addEventListener('click', function() {
-                window.location.href = "${env.BASE_URL}/ping-pong/pong";
+                window.location.href = "${env.BASE_URL}/pong";
             });
         });
     </script>

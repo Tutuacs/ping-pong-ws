@@ -10,7 +10,7 @@ exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
 const process_1 = require("process");
 let AppService = class AppService {
-    getHello() {
+    homePage() {
         return `
     <!DOCTYPE html>
 <html lang="pt-BR">
@@ -408,11 +408,11 @@ let AppService = class AppService {
             const baseUrl = window.location.origin;
             
             pingBtn.addEventListener('click', function() {
-                window.location.href = "${process_1.env.BASE_URL}/ping-pong/ping";
+                window.location.href = "${process_1.env.BASE_URL}/ping";
             });
             
             pongBtn.addEventListener('click', function() {
-                window.location.href = "${process_1.env.BASE_URL}/ping-pong/pong";
+                window.location.href = "${process_1.env.BASE_URL}/pong";
             });
         });
     </script>

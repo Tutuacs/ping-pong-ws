@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PingPongController = void 0;
 const common_1 = require("@nestjs/common");
@@ -17,11 +20,14 @@ let PingPongController = class PingPongController {
     constructor(pingPongService) {
         this.pingPongService = pingPongService;
     }
-    ping() {
+    pingPage() {
         return this.pingPongService.pingPage();
     }
-    pong() {
+    pongPage() {
         return this.pingPongService.pongPage();
+    }
+    ping_pong(type) {
+        return this.pingPongService.ping_pong(type);
     }
 };
 exports.PingPongController = PingPongController;
@@ -30,15 +36,22 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], PingPongController.prototype, "ping", null);
+], PingPongController.prototype, "pingPage", null);
 __decorate([
     (0, common_1.Get)('pong'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], PingPongController.prototype, "pong", null);
+], PingPongController.prototype, "pongPage", null);
+__decorate([
+    (0, common_1.Get)('ping-pong/:type'),
+    __param(0, (0, common_1.Param)('type')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], PingPongController.prototype, "ping_pong", null);
 exports.PingPongController = PingPongController = __decorate([
-    (0, common_1.Controller)('ping-pong'),
+    (0, common_1.Controller)(),
     __metadata("design:paramtypes", [ping_pong_service_1.PingPongService])
 ], PingPongController);
 //# sourceMappingURL=ping-pong.controller.js.map
